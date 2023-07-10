@@ -15,6 +15,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -99,5 +100,22 @@ public class EmployeeController {
         log.info("启用或禁用员工操作{} {}",status, id);
         employeeService.changestatus( status, id);
         return Result.success("操作成功");
+    }
+
+    @GetMapping("/{id}")
+    @ApiOperation("通过id查询员工信息")
+    public  Result<Employee> getone(@PathVariable Long id)
+    {
+        log.info("通过id查询员工信息 {}", id);
+        Employee e=   employeeService.GetbyId(id);
+        return Result.success(e);
+    }
+   @PutMapping
+    @ApiOperation("修改员工信息")
+    public  Result<Employee> update(@RequestBody @Validated EmployeeDTO employeeDTO)
+    {
+        log.info("通过id查询员工信息 {}", employeeDTO);
+        employeeService.update(employeeDTO);
+        return Result.success("修改员工信息成功");
     }
 }

@@ -13,7 +13,7 @@ public interface EmployeeMapper extends BaseMapper<Employee> {
      * @param username
      * @return
      */
-    @Select("select * from employee where username = #{username}")
+    @Select("select * from employee where username = #{username} and status=${@com.sky.constant.StatusConstant@ENABLE}")
     Employee getByUsername(String username);
 
 }

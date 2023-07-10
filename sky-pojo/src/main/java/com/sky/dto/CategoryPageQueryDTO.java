@@ -2,14 +2,16 @@ package com.sky.dto;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data
 public class CategoryPageQueryDTO implements Serializable {
-
+@NotNull
     //页码
     private int page;
-
+    @NotNull
     //每页记录数
     private int pageSize;
 

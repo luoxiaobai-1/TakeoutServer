@@ -103,7 +103,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         queryWrapper.like(StringUtils.hasText(employeePageQueryDTO.getName()),Employee::getName,employeePageQueryDTO.getName());
         Page<Employee> page1 = employeeMapper.selectPage(page, queryWrapper);
         pageResult.setRecords(page1.getRecords());
-        pageResult.setTotal(page1.getTotal());
+        pageResult.setTotal(page1.getSize());
         return pageResult ;
     }
 
@@ -112,6 +112,22 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee=new Employee();
         employee.setId(id);
         employee.setStatus(status);
+        employee.setUpdateUser(BaseContext.getCurrentId());
+        employee.setUpdateTime(LocalDateTime.now());
+        employeeMapper.updateById(employee);
+    }
+
+    @Override
+    public Employee GetbyId(Long id) {
+        Employee employee = employeeMapper.selectById(id);
+        employee.setPassword("****");
+        return  employee;
+    }
+
+    @Override
+    public void update(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO, employee);
         employee.setUpdateUser(BaseContext.getCurrentId());
         employee.setUpdateTime(LocalDateTime.now());
         employeeMapper.updateById(employee);
