@@ -1,5 +1,6 @@
 package com.sky.controller.admin;
 
+import com.sky.annotation.jkl;
 import com.sky.constant.JwtClaimsConstant;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
@@ -104,6 +105,7 @@ public class EmployeeController {
 
     @GetMapping("/{id}")
     @ApiOperation("通过id查询员工信息")
+    @jkl(value = "1")
     public  Result<Employee> getone(@PathVariable Long id)
     {
         log.info("通过id查询员工信息 {}", id);
@@ -112,10 +114,12 @@ public class EmployeeController {
     }
    @PutMapping
     @ApiOperation("修改员工信息")
+   @jkl(value = "1")
     public  Result<Employee> update(@RequestBody @Validated EmployeeDTO employeeDTO)
     {
         log.info("通过id查询员工信息 {}", employeeDTO);
         employeeService.update(employeeDTO);
         return Result.success("修改员工信息成功");
     }
+
 }
