@@ -103,4 +103,36 @@ public class Dishserviceimpl implements Dishservice {
 
     }
     }
+
+    @Override
+    public DishVO getbyid(Long id) {
+
+        Dish dish = dishMapper.selectById(id);
+        DishVO dishVO1 = BeanCopyutil.copyBean(dish, DishVO.class);
+        LambdaQueryWrapper<DishFlavor> queryWrapper=new LambdaQueryWrapper<>();
+        queryWrapper.eq(DishFlavor::getDishId,id);
+        List<DishFlavor> dishFlavors = dishfavorMapper.selectList(queryWrapper);
+        dishVO1.setFlavors(dishFlavors);
+        return dishVO1;
+    }
+
+    @Override
+    @Transactional
+    public void update(DishDTO dishDTO) {
+        LambdaQueryWrapper<DishFlavor> queryWrapper1=new LambdaQueryWrapper<>();
+        queryWrapper1.eq(DishFlavor::getDishId,dishDTO.getId());
+        dishfavorMapper.delete(queryWrapper1);
+        Dish dish = BeanCopyutil.copyBean(dishDTO, Dish.class);
+
+        dishMapper.updateById(dish);
+        List<DishFlavor> flavors = dishDTO.getFlavors();
+        for (int i = 0; i < flavors.size(); i++) {
+            DishFlavor dishFlavor = flavors.get(i);
+            dishFlavor.setId(null);
+            dishFlavor.setDishId(dishDTO.getId());
+            dishfavorMapper.insert(dishFlavor);
+        }
+
+
+    }
 }
