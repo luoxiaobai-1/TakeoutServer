@@ -103,7 +103,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         queryWrapper.like(StringUtils.hasText(employeePageQueryDTO.getName()),Employee::getName,employeePageQueryDTO.getName());
         Page<Employee> page1 = employeeMapper.selectPage(page, queryWrapper);
         pageResult.setRecords(page1.getRecords());
-        pageResult.setTotal(page1.getSize());
+        pageResult.setTotal(page1.getTotal());
         return pageResult ;
     }
 

@@ -84,7 +84,7 @@ public class EmployeeController {
     {
         log.info("新增员工");
         employeeService.addemployee(employeeDTO);
-        return Result.success("添加员工成功");
+        return Result.success();
     }
     @GetMapping("/page")
     @ApiOperation("员工分页操作")
@@ -100,7 +100,7 @@ public class EmployeeController {
     {
         log.info("启用或禁用员工操作{} {}",status, id);
         employeeService.changestatus( status, id);
-        return Result.success("操作成功");
+        return Result.success();
     }
 
     @GetMapping("/{id}")
@@ -115,11 +115,11 @@ public class EmployeeController {
    @PutMapping
     @ApiOperation("修改员工信息")
    @jkl(value = "1")
-    public  Result<Employee> update(@RequestBody @Validated EmployeeDTO employeeDTO)
+    public  Result update(@RequestBody @Validated EmployeeDTO employeeDTO)
     {
         log.info("通过id查询员工信息 {}", employeeDTO);
         employeeService.update(employeeDTO);
-        return Result.success("修改员工信息成功");
+        return Result.success();
     }
 
 }

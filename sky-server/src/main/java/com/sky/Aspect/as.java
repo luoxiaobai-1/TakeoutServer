@@ -24,6 +24,7 @@ public class as {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         log.error(request.getRequestURI());
         log.error(request.getRemoteAddr());
+        joinPoint.getArgs();
 
     }
     @After("poincut()")

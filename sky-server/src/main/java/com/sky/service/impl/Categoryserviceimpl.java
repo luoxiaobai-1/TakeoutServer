@@ -49,7 +49,7 @@ public class Categoryserviceimpl implements CategoryService {
         queryWrapper.orderByAsc(Category::getSort);
         Page<Category> page1 = categoryMapper.selectPage(page, queryWrapper);
         pageResult.setRecords(page1.getRecords());
-        pageResult.setTotal(page1.getSize());
+        pageResult.setTotal(page1.getTotal());
         return pageResult ;
     }
 

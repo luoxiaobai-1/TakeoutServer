@@ -39,7 +39,7 @@ public class CategoryController {
     {
         log.info("新增员工 {}",categoryDTO);
         categoryService.addcategory(categoryDTO);
-        return Result.success("添加分类成功");
+        return Result.success();
     }
     @PostMapping("/status/{status}")
     @ApiOperation("禁用分类操作")
@@ -47,7 +47,7 @@ public class CategoryController {
     {
         log.info("启用或禁用分类操作{} {}",status, id);
         categoryService.changestatus( status, id);
-        return Result.success("操作成功");
+        return Result.success();
     }
     @PutMapping
     @ApiOperation("修改分类信息")
@@ -55,7 +55,7 @@ public class CategoryController {
     {
         log.info("通过id查询员工信息 {}", categoryDTO);
         categoryService.update(categoryDTO);
-        return Result.success("修改员工信息成功");
+        return Result.success();
     }
     @GetMapping("/list")
     @ApiOperation("根据类型查询分类")
@@ -67,6 +67,6 @@ public class CategoryController {
 @ApiOperation("删除分类")
 public Result Delete(Integer id){
      categoryService.Delete(id);
-    return Result.success("删除成功");
+    return Result.success();
 }
 }

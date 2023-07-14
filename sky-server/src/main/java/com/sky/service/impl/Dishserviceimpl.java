@@ -135,4 +135,15 @@ public class Dishserviceimpl implements Dishservice {
 
 
     }
+
+    @Override
+    public List<Dish> list(Long categoryId) {
+        LambdaQueryWrapper<Dish> queryWrapper=new LambdaQueryWrapper<>();
+        queryWrapper.eq(Dish::getCategoryId,categoryId);
+        queryWrapper.eq(Dish::getStatus,StatusConstant.ENABLE);
+        return dishMapper.selectList(queryWrapper);
+
+    }
+
+
 }
