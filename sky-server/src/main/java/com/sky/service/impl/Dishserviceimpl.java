@@ -27,6 +27,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -142,6 +143,23 @@ public class Dishserviceimpl implements Dishservice {
         queryWrapper.eq(Dish::getCategoryId,categoryId);
         queryWrapper.eq(Dish::getStatus,StatusConstant.ENABLE);
         return dishMapper.selectList(queryWrapper);
+
+    }
+
+    @Override
+    public List<DishVO> listWithFlavor(Long categoryId) {
+        Dish dish = new Dish();
+        dish.setCategoryId(categoryId);
+        dish.setStatus(StatusConstant.ENABLE);//查询起售中的菜品
+         LambdaQueryWrapper<Dish> queryWrapper=new LambdaQueryWrapper<>();
+
+
+        queryWrapper.eq(dish.getCategoryId()!=null, Dish::getCategoryId,dish.getCategoryId());
+        queryWrapper.eq(dish.getStatus()!=null, Dish::getStatus,dish.getStatus());
+        List<Dish> dishes = dishMapper.selectList(queryWrapper);
+        List<DishVO> dishVOS = BeanCopyutil.copyBeanList(dishes, DishVO.class);
+        return dishVOS.stream().map(dishVO -> dishVO.setFlavors(dishfavorMapper.selectListbyid(dishVO.getId()))).collect(Collectors.toList());
+
 
     }
 

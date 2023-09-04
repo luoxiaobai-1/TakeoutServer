@@ -83,9 +83,9 @@ public class Categoryserviceimpl implements CategoryService {
     public List<Category> list(Integer type) {
         LambdaQueryWrapper<Category> queryWrapper=new LambdaQueryWrapper<>();
         queryWrapper.eq(Category::getStatus,StatusConstant.ENABLE);
-        queryWrapper.eq(Category::getType,type);
-        queryWrapper.orderByAsc(Category::getCreateTime);
-        queryWrapper.orderByAsc(Category::getSort);
+        queryWrapper.eq(type!=null,Category::getType,type);
+//        queryWrapper.orderByAsc(Category::getCreateTime);
+//        queryWrapper.orderByAsc(Category::getSort);
         return categoryMapper.selectList(queryWrapper);
     }
 

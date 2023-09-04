@@ -11,11 +11,13 @@ import com.sky.entity.Setmeal;
 import com.sky.entity.SetmealDish;
 import com.sky.exception.DeletionNotAllowedException;
 import com.sky.mapper.CategoryMapper;
+import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmaldishMapper;
 import com.sky.mapper.SetmealMapper;
 import com.sky.result.PageResult;
 import com.sky.service.SetmealService;
 import com.sky.utils.BeanCopyutil;
+import com.sky.vo.DishItemVO;
 import com.sky.vo.SetmealVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -37,6 +40,9 @@ public class Setmealserviceimpl implements SetmealService {
     SetmaldishMapper setmaldishMapper;
     @Autowired
     CategoryMapper categoryMapper;
+    @Autowired
+    DishMapper dishMapper;
+
     @Override
     @Transactional
     public void save(SetmealDTO setmealDTO) {
@@ -138,5 +144,24 @@ public class Setmealserviceimpl implements SetmealService {
         setmeal.setId(id);
         setmeal.setStatus(status);
         setmealMapper.updateById(setmeal);
+    }
+
+    @Override
+    public List<Setmeal> list(Long categoryId) {
+        Setmeal setmeal = new Setmeal();
+        setmeal.setCategoryId(categoryId);
+        setmeal.setStatus(StatusConstant.ENABLE);
+        LambdaQueryWrapper<Setmeal> queryWrapper=new LambdaQueryWrapper<>();
+        queryWrapper.eq(Setmeal::getCategoryId,setmeal.getCategoryId());
+        queryWrapper.eq(Setmeal::getStatus,setmeal.getStatus());
+        queryWrapper.orderByDesc(Setmeal::getCreateTime);
+        return setmealMapper.selectList(queryWrapper);
+    }
+
+    @Override
+    public List<DishItemVO> getDishItemById(Long id) {
+      return setmealMapper.getDishItemBySetmealId(id);
+
+
     }
 }
