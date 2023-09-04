@@ -2,6 +2,7 @@ package com.sky.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.sky.config.RedisCache;
 import com.sky.constant.StatusConstant;
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -40,6 +42,8 @@ public class Dishserviceimpl implements Dishservice {
     CategoryMapper categoryMapper;
     @Autowired
     SetmaldishMapper setmaldishMapper;
+    @Autowired
+    RedisCache redisCache;
     @Override
     @Transactional
     public void save(DishDTO dishDTO) {
@@ -148,17 +152,27 @@ public class Dishserviceimpl implements Dishservice {
 
     @Override
     public List<DishVO> listWithFlavor(Long categoryId) {
+
+        String key="dish_"+categoryId;
+        List<DishVO> cacheObject =redisCache.getCacheObject(key);
+
+       if (cacheObject!=null&&cacheObject.size()>0)
+       {
+           return cacheObject;
+       }
         Dish dish = new Dish();
         dish.setCategoryId(categoryId);
         dish.setStatus(StatusConstant.ENABLE);//查询起售中的菜品
          LambdaQueryWrapper<Dish> queryWrapper=new LambdaQueryWrapper<>();
-
-
         queryWrapper.eq(dish.getCategoryId()!=null, Dish::getCategoryId,dish.getCategoryId());
         queryWrapper.eq(dish.getStatus()!=null, Dish::getStatus,dish.getStatus());
         List<Dish> dishes = dishMapper.selectList(queryWrapper);
         List<DishVO> dishVOS = BeanCopyutil.copyBeanList(dishes, DishVO.class);
-        return dishVOS.stream().map(dishVO -> dishVO.setFlavors(dishfavorMapper.selectListbyid(dishVO.getId()))).collect(Collectors.toList());
+
+        List<DishVO> collect = dishVOS.stream().map(dishVO -> dishVO.setFlavors(dishfavorMapper.selectListbyid(dishVO.getId()))).collect(Collectors.toList());
+        redisCache.setCacheObject(key,collect);
+        return
+                collect;
 
 
     }
