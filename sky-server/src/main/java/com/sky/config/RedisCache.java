@@ -244,4 +244,13 @@ public class RedisCache
 
 
     }
+    public  void deleteall(String key)
+    {
+
+        Set keys = redisTemplate.keys(key);
+        assert keys != null;
+        redisTemplate.delete(keys);;
+
+
+    }
 }

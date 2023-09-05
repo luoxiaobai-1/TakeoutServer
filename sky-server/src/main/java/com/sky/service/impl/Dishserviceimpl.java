@@ -47,6 +47,8 @@ public class Dishserviceimpl implements Dishservice {
     @Override
     @Transactional
     public void save(DishDTO dishDTO) {
+        String key="dish_"+dishDTO.getCategoryId();
+        redisCache.deleteObject(key);
         Dish dish=new Dish();
         BeanUtils.copyProperties(dishDTO,dish);
         dishMapper.insert(dish);
@@ -88,6 +90,7 @@ public class Dishserviceimpl implements Dishservice {
     @Override
     @Transactional
     public void Delete(Integer[] id) {
+       redisCache.deleteall("dish_*");
         for (Integer integer : id) {
         if (StatusConstant.ENABLE.equals(dishMapper.selectById(integer).getStatus()))
         {
@@ -124,6 +127,8 @@ public class Dishserviceimpl implements Dishservice {
     @Override
     @Transactional
     public void update(DishDTO dishDTO) {
+        String key="dish_"+dishDTO.getCategoryId();
+        redisCache.deleteObject(key);
         LambdaQueryWrapper<DishFlavor> queryWrapper1=new LambdaQueryWrapper<>();
         queryWrapper1.eq(DishFlavor::getDishId,dishDTO.getId());
         dishfavorMapper.delete(queryWrapper1);
@@ -174,6 +179,16 @@ public class Dishserviceimpl implements Dishservice {
         return
                 collect;
 
+
+    }
+
+    @Override
+    public void startOrStop(Integer status, Long id) {
+        redisCache.deleteall("dish_*");
+        Dish dish=new Dish();
+        dish.setStatus(status);
+        dish.setId(id);
+        dishMapper.updateById(dish);
 
     }
 
