@@ -24,7 +24,9 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         log.info("公共字段填充[insert]...");
         log.info(metaObject.toString());
         metaObject.setValue("createTime", LocalDateTime.now());
-        metaObject.setValue("updateTime", LocalDateTime.now());
+        if (metaObject.hasSetter("updateTime"))
+        {
+        metaObject.setValue("updateTime", LocalDateTime.now());}
         metaObject.setValue("createUser", BaseContext.getCurrentId());
         metaObject.setValue("updateUser", BaseContext.getCurrentId());
 
