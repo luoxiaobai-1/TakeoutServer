@@ -48,10 +48,14 @@ public class AddressBookServiceimpl implements AddressBookService {
         List<AddressBook> isDefaultAddressBook = addressBookMapper.getIsDefaultAddressBook(BaseContext.getCurrentId());
         if (isDefaultAddressBook!=null&&isDefaultAddressBook.size()==1)
         {   addressBook.setIsDefault(StatusConstant.ENABLE);
-        addressBookMapper.updateById(addressBook);}
+            AddressBook addressBook1 = isDefaultAddressBook.get(0);
+            addressBook1.setIsDefault(StatusConstant.DISABLE);
+            addressBookMapper.updateById(addressBook1);}
         else
         {
-            throw  new AddressBookBusinessException("已经cunz");
+            addressBook.setIsDefault(StatusConstant.ENABLE);
+            addressBookMapper.updateById(addressBook);
+
         }
 
 
