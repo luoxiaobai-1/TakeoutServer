@@ -17,14 +17,18 @@ import com.sky.mapper.ShoppingcarMapper;
 import com.sky.service.OrderService;
 import com.sky.utils.BeanCopyutil;
 import com.sky.vo.OrderSubmitVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class OrderServiceimpl implements OrderService {
     @Autowired
     OrderMapper orderMapper;
@@ -63,15 +67,19 @@ public class OrderServiceimpl implements OrderService {
          orders.setConsignee(addressBook.getConsignee());
          orders.setUserId(BaseContext.getCurrentId());
         orderMapper.insert(orders);
+        log.error(String.valueOf(orders.getId()));
+        List<OrderDetail> orderDetails=new ArrayList<>();
+
         for (ShoppingCart cart : list) {
-            OrderDetail orderDetail=new OrderDetail();
-            OrderDetail orderDetail1 = BeanCopyutil.copyBean(cart, OrderDetail.class);
-            orderDetail1.setOrderId(orders.getId());
-            orderDetailMapper.insert(orderDetail);
+
+            OrderDetail orderDetail = BeanCopyutil.copyBean(cart, OrderDetail.class);
+            orderDetail .setOrderId(orders.getId());
+            orderDetails.add(orderDetail );
             //todo 修改成批量插入
 
         }
-shoppingcarMapper.deleteById(BaseContext.getCurrentId());
+        orderDetailMapper.insertBatch(orderDetails);
+shoppingcarMapper.deleteByUserId(BaseContext.getCurrentId());
         return OrderSubmitVO.builder().id(orders.getId()).orderTime(orders.getOrderTime()).orderNumber(orders.getNumber()).orderAmount(orders.getAmount()).build();
 
 

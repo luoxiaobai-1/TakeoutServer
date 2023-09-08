@@ -1,5 +1,6 @@
 package com.sky.controller.user;
 
+import com.sky.config.RedisCache;
 import com.sky.constant.JwtClaimsConstant;
 import com.sky.dto.UserLoginDTO;
 import com.sky.entity.User;
@@ -12,10 +13,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,11 +29,6 @@ public class UserController {
     @Autowired
     private JwtProperties jwtProperties;
 
-    /**
-     * 微信登录
-     * @param userLoginDTO
-     * @return
-     */
     @PostMapping("/login")
     @ApiOperation("微信登录")
     public Result<UserLoginVO> login(@RequestBody UserLoginDTO userLoginDTO){
@@ -55,4 +49,5 @@ public class UserController {
                 .build();
         return Result.success(userLoginVO);
     }
+
 }

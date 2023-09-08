@@ -12,5 +12,7 @@ import java.util.List;
 public interface ShoppingcarMapper extends BaseMapper<ShoppingCart> {
 
     List<ShoppingCart> list(ShoppingCart shoppingCart);
-    boolean deleteone (ShoppingCartDTO shoppingCartDTO);;
+    boolean deleteone (ShoppingCartDTO shoppingCartDTO);
+    boolean deleteByUserId(long userid);
+
 }
