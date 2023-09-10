@@ -23,6 +23,7 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
+
     /**
      * 用户下单
      * @param ordersSubmitDTO
@@ -46,8 +47,8 @@ public class OrderController {
     @ApiOperation("订单支付")
     public Result<OrderPaymentVO> payment(@RequestBody OrdersPaymentDTO ordersPaymentDTO) throws Exception {
         log.info("订单支付：{}", ordersPaymentDTO);
-        //OrderPaymentVO orderPaymentVO = orderService.payment(ordersPaymentDTO);
-        OrderPaymentVO orderPaymentVO=new OrderPaymentVO();
+        OrderPaymentVO orderPaymentVO = orderService.payment(ordersPaymentDTO);
+        //OrderPaymentVO orderPaymentVO=new OrderPaymentVO();
         log.info("生成预支付交易单：{}", orderPaymentVO);
         return Result.success(orderPaymentVO);
     }
@@ -110,10 +111,10 @@ public class OrderController {
 //     * @param id
 //     * @return
 //     */
-//    @GetMapping("/reminder/{id}")
-//    @ApiOperation("客户催单")
-//    public Result reminder(@PathVariable("id") Long id){
-//        orderService.reminder(id);
-//        return Result.success();
-//    }
+    @GetMapping("/reminder/{id}")
+    @ApiOperation("客户催单")
+    public Result reminder(@PathVariable("id") Long id){
+        orderService.reminder(id);
+        return Result.success();
+    }
 }
