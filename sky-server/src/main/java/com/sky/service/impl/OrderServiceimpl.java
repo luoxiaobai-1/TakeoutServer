@@ -156,6 +156,7 @@ JSONObject jsonObject=new JSONObject();
     @Override
     public void reminder(Long id) {
         Orders orders = orderMapper.selectById(id);
+
         if (orders==null)
         {
             throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);

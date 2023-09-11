@@ -1,6 +1,8 @@
 package com.sky.webstocket;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
+
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -16,6 +18,7 @@ import java.util.Map;
  */
 @Component
 @ServerEndpoint("/ws/{sid}")
+
 public class WebSocketServer {
 
     //存放会话对象
