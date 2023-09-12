@@ -15,4 +15,5 @@ public interface ShoppingcarMapper extends BaseMapper<ShoppingCart> {
     boolean deleteone (ShoppingCartDTO shoppingCartDTO);
     boolean deleteByUserId(long userid);
 
+    void insertBatch(List<ShoppingCart> shoppingCartList);
 }

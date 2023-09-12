@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.sky.dto.GoodsSalesDTO;
 import com.sky.entity.Orders;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.time.LocalDateTime;
@@ -22,5 +23,7 @@ public interface OrderMapper extends BaseMapper<Orders> {
 
     Integer countByMap(Map map);
 
-    List<GoodsSalesDTO> getSalesTop10(LocalDateTime beginTime, LocalDateTime endTime);
+    List<GoodsSalesDTO> getSalesTop10(@Param("begin") LocalDateTime beginTime, @Param("end") LocalDateTime endTime);
+@Select("Select count(*)from orders where status=#{deliveryInProgress}")
+    Integer countStatus(Integer deliveryInProgress);
 }
