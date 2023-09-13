@@ -252,6 +252,11 @@ JSONObject jsonObject=new JSONObject();
 
         // 将该订单及其详情封装到OrderVO并返回
         OrderVO orderVO = new OrderVO();
+        Orders orders1 = orderMapper.selectById(id);
+        AddressBook addressBook = addressBookMapper.selectById(orders1.getAddressBookId());
+        String ad=addressBook.getProvinceName()+addressBook.getCityName()+addressBook.getDetail();
+        orders.setAddress(ad);
+        log.warn("地址,"+ad);
         BeanUtils.copyProperties(orders, orderVO);
         orderVO.setOrderDetailList(orderDetailList);
 
@@ -287,7 +292,33 @@ JSONObject jsonObject=new JSONObject();
 //            }
 //        }
        // return new PageResult(page.getTotal(), list);
-        return  null;
+        Long currentId = BaseContext.getCurrentId();
+        com.baomidou.mybatisplus.extension.plugins.pagination.Page<Orders> page1=new Page<>(page, pageSize);
+        LambdaQueryWrapper<Orders>queryWrapper=new LambdaQueryWrapper<>();
+        queryWrapper.eq(currentId!=null,Orders::getUserId,currentId);
+        queryWrapper.eq(status!=null,Orders::getStatus,status);
+        Page<Orders> ordersPage = orderMapper.selectPage(page1, queryWrapper);
+
+        if (ordersPage.getTotal()==0)
+        {
+            return  new PageResult(0, null);
+        }
+        List<Orders> records = ordersPage.getRecords();
+        List<OrderVO> list = new ArrayList<>();
+        for (Orders orders :records) {
+                Long orderId = orders.getId();// 订单id
+
+                // 查询订单明细
+                List<OrderDetail> orderDetails = orderDetailMapper.getByOrderId(orderId);
+
+
+            OrderVO orderVO = BeanCopyutil.copyBean(orders, OrderVO.class);
+
+            orderVO.setOrderDetailList(orderDetails);
+
+                list.add(orderVO);
+            }
+        return  new PageResult(ordersPage.getTotal(), list);
 
     }
 
@@ -302,14 +333,16 @@ JSONObject jsonObject=new JSONObject();
         com.baomidou.mybatisplus.extension.plugins.pagination.Page<Orders> page=new Page<>(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize());
         LambdaQueryWrapper<Orders>queryWrapper=new LambdaQueryWrapper<>();
         queryWrapper.eq(StringUtils.hasText(ordersPageQueryDTO.getNumber()),Orders::getNumber,ordersPageQueryDTO.getNumber());
-        queryWrapper.eq(StringUtils.hasText(ordersPageQueryDTO.getPhone()),Orders::getPhone,ordersPageQueryDTO.getPhone());
+        queryWrapper.like(StringUtils.hasText(ordersPageQueryDTO.getPhone()),Orders::getPhone,ordersPageQueryDTO.getPhone());
         queryWrapper.eq(ordersPageQueryDTO.getStatus()!=null,Orders::getStatus,ordersPageQueryDTO.getStatus());
         queryWrapper.eq(ordersPageQueryDTO.getUserId()!=null,Orders::getUserId,ordersPageQueryDTO.getUserId());
-       // queryWrapper.le(ordersPageQueryDTO.getEndTime()!=null,Orders::get,ordersPageQueryDTO.getEndTime());
+       queryWrapper.between(ordersPageQueryDTO.getEndTime()!=null&&ordersPageQueryDTO.getBeginTime()!=null,Orders::getOrderTime,ordersPageQueryDTO.getEndTime(),ordersPageQueryDTO.getEndTime());
+queryWrapper.orderByDesc(Orders::getOrderTime);
+        Page<Orders> ordersPage = orderMapper.selectPage(page, queryWrapper);
+        List<OrderVO> orderVOS = BeanCopyutil.copyBeanList(ordersPage.getRecords(), OrderVO.class);
 
-         orderMapper.selectPage(page,queryWrapper);
-       // return new PageResult(page.getTotal(), orderVOList);
-        return  null;
+        return new PageResult(ordersPage.getTotal(), orderVOS);
+
     }
 
     @Override

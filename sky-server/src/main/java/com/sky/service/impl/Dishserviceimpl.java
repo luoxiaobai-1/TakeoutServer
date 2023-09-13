@@ -53,10 +53,16 @@ public class Dishserviceimpl implements Dishservice {
         BeanUtils.copyProperties(dishDTO,dish);
         dishMapper.insert(dish);
         List<DishFlavor> flavors = dishDTO.getFlavors();
+
+
         if (flavors!=null&&flavors.size()>0)
         {
+            for (DishFlavor flavor : flavors) {
+                flavor.setDishId(dish.getId());
+            }
+
             dishfavorMapper.InsertList(flavors);
-        }
+        }//todo 待改正
 
 
     }

@@ -70,7 +70,7 @@
     </select>
 
     <select id="sumByMap" resultType="java.lang.Double">
-        select sum(amount) from orders
+        select sum(amount)  from orders
         <where>
             <if test="begin != null">
                 and order_time &gt; #{begin}
